@@ -231,6 +231,10 @@ function requireError (err) {
       config.external_apps.map(app => apps.push(app.path))
     }
 
+       // provide global config object
+    // TODO: frozen object would be great ...
+    window.phoenixConfig = config
+
     requirejs(apps, loadApps, requireError)
   } catch (err) {
     router.push('missing-config')

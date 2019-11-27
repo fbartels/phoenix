@@ -16,12 +16,14 @@ const store = require('./store')
 function $gettext (msg) {
   return msg
 }
+const filesConfig = window.phoenixConfig.files || []
 const appInfo = {
   name: $gettext('Files'),
   id: 'files',
   icon: 'folder',
   isFileEditor: false,
   extensions: [],
+  fileActions: filesConfig.actions || [],
   fileSideBars: [
     {
       app: 'files-version',
