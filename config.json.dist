@@ -9,5 +9,9 @@
   },
   "apps" : [
     "files"
-  ]
+  ],
+  "menu" : {
+    "items": {
+	}
+  }
 }

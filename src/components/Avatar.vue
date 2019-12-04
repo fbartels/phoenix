@@ -1,7 +1,7 @@
 <template>
-  <div v-if="enabled">
+  <span v-if="enabled">
     <oc-avatar width=42 height=42 :loading="loading" :src="avatarSource" />
-  </div>
+  </span>
 </template>
 <script>
 import { mapGetters } from 'vuex'
