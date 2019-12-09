@@ -558,11 +558,9 @@ Then('all users and groups that contain the string {string} in their name should
       return displayName !== currentUserDisplayName
     }
   )
-  console.log(usersMatchingPattern)
   await assertUsersInAutocompleteList(usersMatchingPattern)
   // check if every created group that contains the pattern is listed in the autocomplete list
   const groupMatchingPattern = getGroupsMatchingPattern(pattern)
-  console.log(groupMatchingPattern)
   await assertGroupsInAutocompleteList(groupMatchingPattern)
 })
 
