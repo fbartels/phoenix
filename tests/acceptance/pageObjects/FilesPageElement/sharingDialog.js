@@ -457,13 +457,13 @@ module.exports = {
      */
     isAutocompleteListVisible: async function () {
       let isVisible
-      await this.waitForElementNotVisible({
-        locateStrategy: 'css selector',
-        selector: this.elements.sharingAutoCompleteDropDown.selector,
-        abortOnFailure: false
-      }, 1000, (result) => {
-        isVisible = result.value
-      })
+      await this.api.elements(
+        'css selector',
+        this.elements.sharingAutoCompleteDropDownElements.selector,
+        (result) => {
+          isVisible = result.value.length > 0
+        }
+      )
       return isVisible
     }
   },
