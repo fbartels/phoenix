@@ -549,7 +549,6 @@ When('the user shares with the selected collaborators', function () {
 
 Then('all users and groups that contain the string {string} in their name should be listed in the autocomplete list on the webUI', async function (pattern) {
   const currentUserDisplayName = userSettings.getDisplayNameForUser(client.globals.currentUser)
-  console.log(currentUserDisplayName)
   // check if all created users that contain the pattern either in the display name or the username
   // are listed in the autocomplete list
   // in both cases the display name should be listed
@@ -716,14 +715,14 @@ Then('the user should not be able to share file/folder/resource {string} using t
     .filesList()
     .closeSidebar(100)
     .openSharingDialog(resource)
-    .isSharingAllowed()
+    .getSharingPermissionMsg()
   const noSharePermissionsMsgFormat = "You don't have permission to share this %s"
   const noSharePermissionsFileMsg = util.format(noSharePermissionsMsgFormat, 'file')
   const noSharePermissionsFolderMsg = util.format(noSharePermissionsMsgFormat, 'folder')
   return assert.ok(
     noSharePermissionsFileMsg === shareResponse ||
     noSharePermissionsFolderMsg === shareResponse,
-    `Expected no permission to share but found '${shareResponse}'`
+    `Expected: no permission to share resource '${resource}' but found: '${shareResponse}'`
   )
 })
 

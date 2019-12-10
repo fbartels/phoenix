@@ -8,7 +8,7 @@ const COLLABORATOR_PERMISSION_ARRAY = ['share', 'update', 'create', 'delete']
 module.exports = {
   commands: {
     /**
-     * @returns {[string, string, string, string]}
+     * @returns {array}
      */
     getCollaboratorPermissionArray: function () {
       return COLLABORATOR_PERMISSION_ARRAY
@@ -28,8 +28,12 @@ module.exports = {
     getPermissionCheckbox: function (permission) {
       return util.format(this.elements.permissionCheckbox.selector, permission)
     },
-
-    isSharingAllowed: async function () {
+    /**
+     * gets share permission message whether is allowed to share or not
+     *
+     * @returns {Promise<string>}
+     */
+    getSharingPermissionMsg: async function () {
       let shareResponse
       // eslint-disable-next-line no-unused-expressions
       this.api.expect.element(this.elements.addShareSaveButton.selector).not.to.be.present
@@ -451,7 +455,7 @@ module.exports = {
       return userSharePostfix
     },
     /**
-     * function checks whether autocomplete list is visible
+     * checks whether autocomplete list is visible
      *
      * @returns {Promise<boolean>}
      */
