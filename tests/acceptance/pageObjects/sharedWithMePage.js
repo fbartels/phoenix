@@ -35,7 +35,6 @@ module.exports = {
         this.elements.assertStatusFileRow.locateStrategy,
         requiredXpath,
         (result) => {
-          console.log(result)
           isPresent = result.value.length === 1
         }
       )
