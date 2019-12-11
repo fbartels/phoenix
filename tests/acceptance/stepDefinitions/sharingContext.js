@@ -445,12 +445,12 @@ When('the user disables all the custom permissions of collaborator {string} for 
     .disableAllCustomPermissions(collaborator)
 })
 
-const assertPermissions = async function (currentSharePermissions, permissions = undefined) {
+const assertSharePermissions = async function (currentSharePermissions, permissions = undefined) {
   let expectedPermissionArray
   if (permissions !== undefined) {
     expectedPermissionArray = await client.page.FilesPageElement.sharingDialog().getArrayFromPermissionString(permissions)
   }
-  const COLLABORATOR_PERMISSION_ARRAY = await client.page.FilesPageElement.sharingDialog().getCollaboratorPermissionArray()
+  const COLLABORATOR_PERMISSION_ARRAY = ['share', 'update', 'create', 'delete']
   for (let i = 0; i < COLLABORATOR_PERMISSION_ARRAY.length; i++) {
     const permissionName = COLLABORATOR_PERMISSION_ARRAY[i]
     if (permissions !== undefined) {
@@ -468,16 +468,17 @@ const assertPermissions = async function (currentSharePermissions, permissions =
   }
 }
 
-Then('custom permission/permissions {string} should be set for user {string} for file/folder {string} on the webUI', async function (permissions, user, resource) {
-  const currentSharePermissions = await client.page
-    .FilesPageElement
-    .filesList()
-    .closeSidebar(100)
-    .openSharingDialog(resource)
-    .getDisplayedPermission(user, permissions)
+Then('custom permission/permissions {string} should be set for user {string} for file/folder {string} on the webUI',
+  async function (permissions, user, resource) {
+    const currentSharePermissions = await client.page
+      .FilesPageElement
+      .filesList()
+      .closeSidebar(100)
+      .openSharingDialog(resource)
+      .getDisplayedPermission(user)
 
-  return assertPermissions(currentSharePermissions, permissions)
-})
+    return assertSharePermissions(currentSharePermissions, permissions)
+  })
 
 Then('no custom permissions should be set for collaborator {string} for file/folder {string} on the webUI', async function (user, resource) {
   const currentSharePermissions = await client.page
@@ -487,7 +488,7 @@ Then('no custom permissions should be set for collaborator {string} for file/fol
     .openSharingDialog(resource)
     .getDisplayedPermission(user)
 
-  return assertPermissions(currentSharePermissions)
+  return assertSharePermissions(currentSharePermissions)
 })
 
 When('the user shares file/folder/resource {string} with group {string} as {string} using the webUI', userSharesFileOrFolderWithGroup)

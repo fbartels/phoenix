@@ -3,16 +3,8 @@ const userSharePostfix = '\nUser'
 const util = require('util')
 const _ = require('lodash')
 
-const COLLABORATOR_PERMISSION_ARRAY = ['share', 'update', 'create', 'delete']
-
 module.exports = {
   commands: {
-    /**
-     * @returns {array}
-     */
-    getCollaboratorPermissionArray: function () {
-      return COLLABORATOR_PERMISSION_ARRAY
-    },
     /**
      *
      * @param {string} permissions
@@ -240,6 +232,7 @@ module.exports = {
       const permissions = {}
       const panelSelector = this.elements.sharingSidebarRoot.selector
       let permissionToggle
+      const COLLABORATOR_PERMISSION_ARRAY = ['share', 'update', 'create', 'delete']
       for (let i = 0; i < COLLABORATOR_PERMISSION_ARRAY.length; i++) {
         permissionToggle = panelSelector + util.format(
           this.elements.permissionCheckbox.selector,
@@ -289,7 +282,7 @@ module.exports = {
      * @param {string} collaborator
      * @param {string} permissions
      */
-    getDisplayedPermission: async function (collaborator, permissions = undefined) {
+    getDisplayedPermission: async function (collaborator) {
       await this.clickEditShare(collaborator)
       // read the permissions from the checkboxes
       const currentSharePermissions = await this.getSharePermissions()
@@ -460,10 +453,9 @@ module.exports = {
      * @returns {Promise<boolean>}
      */
     isAutocompleteListVisible: async function () {
-      let isVisible
+      let isVisible = false
       await this.api.elements(
-        'css selector',
-        this.elements.sharingAutoCompleteDropDownElements.selector,
+        '@sharingAutoCompleteDropDownElements',
         (result) => {
           isVisible = result.value.length > 0
         }
