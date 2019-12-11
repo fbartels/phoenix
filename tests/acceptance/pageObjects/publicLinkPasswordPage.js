@@ -36,21 +36,25 @@ module.exports = {
           .waitForElementPresent({ selector: '@filesListProgressBar', abortOnFailure: false }) // don't fail if we are too late
           .waitForElementNotPresent('@filesListProgressBar')
       },
-      assertResourceAccessDenied: function () {
-        return this
+      /**
+       * gets resource access denied message after clicking submit password button for a public link share
+       *
+       * @return {Promise<string>}
+       */
+      getResourceAccessDeniedMsg: async function () {
+        let message
+        await this
           .waitForElementPresent('@passwordSubmitButton')
           .click('@passwordSubmitButton')
           .waitForElementVisible('@loadingPublicLink')
           .waitForElementPresent('@passwordInput')
           .getText(
-            this.elements.resourceProtectedText.locateStrategy,
-            this.elements.resourceProtectedText.selector,
+            '@resourceProtectedText',
             (result) => {
-              if (result.value !== 'This resource is password-protected.') {
-                throw new Error('Resource Protected Message Invalid', result)
-              }
+              message = result.value
             }
           )
+        return message
       }
     }
   ]
