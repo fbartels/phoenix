@@ -736,14 +736,22 @@ Then('the collaborators list for file/folder/resource {string} should be empty',
   assert.strictEqual(count, 0, `Expected to have no collaborators for '${resource}', Found: ${count}`)
 })
 
-Then('the file/folder/resource {string} should be in {string} state on the webUI', function (filename, status) {
+Then('the file/folder/resource {string} should be in {string} state on the webUI', async function (filename, status) {
   status = status === 'Accepted' ? '' : status
-  return client.page.sharedWithMePage().assertDesiredStatusIsPresent(filename, status)
+  const isPresent = await client.page.sharedWithMePage().isDesiredStatusPresent(filename, status)
+  return assert.ok(
+    isPresent,
+    `Expected resource '${filename}' to be present with status '${status}' but got not found!`
+  )
 })
 
-Then('file/folder {string} shared by {string} should be in {string} state on the webUI', function (element, user, status) {
+Then('file/folder {string} shared by {string} should be in {string} state on the webUI', async function (element, user, status) {
   status = status === 'Accepted' ? '' : status
-  return client.page.sharedWithMePage().assertDesiredStatusIsPresent(element, status, user)
+  const isPresent = await client.page.sharedWithMePage().isDesiredStatusPresent(element, status, user)
+  return assert.ok(
+    isPresent,
+    `Expected resource '${element}' to be present with status '${status}' but got not found!`
+  )
 })
 
 When('the user declines share {string} offered by user {string} using the webUI', function (filename, user) {
@@ -757,7 +765,11 @@ When('the user accepts share {string} offered by user {string} using the webUI',
 Then('the file {string} should be in {string} state on the webUI after a page reload', async function (filename, status) {
   status = status === 'Accepted' ? '' : status
   await client.refresh()
-  return client.page.sharedWithMePage().assertDesiredStatusIsPresent(filename, status)
+  const isPresent = await client.page.sharedWithMePage().isDesiredStatusPresent(filename, status)
+  return assert.ok(
+    isPresent,
+    `Expected resource '${filename}' to be present with status '${status}' but got not found!`
+  )
 })
 
 Then('the autocomplete list should not be displayed on the webUI', function () {
@@ -772,12 +784,21 @@ Given('user {string} has accepted the share {string} offered by user {string}', 
   return sharingHelper.acceptShare(filename, user, sharer)
 })
 
-Then('the file {string} shared by {string} should not be in {string} state', function (filename, sharer, status) {
-  return client.page.sharedWithMePage().assertDesiredStatusIsAbsent(filename, sharer, status)
+Then('the file {string} shared by {string} should not be in {string} state', async function (filename, sharer, status) {
+  const isPresent = await client.page.sharedWithMePage().isDesiredStatusPresent(filename, sharer, status)
+  return assert.ok(
+    !isPresent,
+    `Expected resource '${filename}' to be present without status '${status}' but got found!`
+  )
 })
 
-Then('file/folder {string} should be marked as shared by {string} on the webUI', function (element, sharer) {
-  return client.page.sharedWithMePage().assertSharedByUser(element, sharer)
+Then('file/folder {string} should be marked as shared by {string} on the webUI', async function (element, sharer) {
+  const username = await client.page.sharedWithMePage().getSharedByUser(element)
+  return assert.strictEqual(
+    username,
+    sharer,
+    `Expected username: '${sharer}', but found '${username}'`
+  )
 })
 
 Then('user {string} should not have created any shares', async function (user) {
