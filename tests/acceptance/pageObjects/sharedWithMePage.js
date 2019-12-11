@@ -16,38 +16,29 @@ module.exports = {
       )
     },
     /**
+     * Checks if the file-row of the desired file-name with the username is present with the desired status of accepted,
+     * declined or pending
+     *
      * @param {string} filename
      * @param {string} status - It takes one of the following : declined, pending or '' for accepted
      * @param {string} user
-     * Checks if the file-row of the desired file-name with the username consists of the desired status of accepted,
-     * declined or pending
+     *
+     * @return {Promise<boolean>}
      */
-    assertDesiredStatusIsPresent: function (filename, status, user) {
+    isDesiredStatusPresent: async function (filename, status, user) {
+      let isPresent
       let requiredXpath = this.api.page.FilesPageElement.filesList().getFileRowSelectorByFileName(filename) +
                           util.format(this.elements.assertStatusFileRow.selector, status)
       requiredXpath = user === undefined ? requiredXpath : requiredXpath +
                       util.format(this.elements.getSharedFromUserName.selector, user)
-      return this.waitForElementVisible({
-        locateStrategy: this.elements.assertStatusFileRow.locateStrategy,
-        selector: requiredXpath
-      })
-    },
-    /**
-     * @param {string} filename
-     * @param {string} sharer
-     * @param {string} status - It takes one of the following : declined, pending or '' for accepted
-     * Checks if the file-row of the desired file-name with the username doesn't consist of the desired status of accepted,
-     * declined or pending
-     */
-    assertDesiredStatusIsAbsent: function (filename, sharer, status) {
-      let requiredXpath = this.api.page.FilesPageElement.filesList().getFileRowSelectorByFileName(filename) +
-        util.format(this.elements.assertStatusFileRow.selector, status)
-      requiredXpath = sharer === undefined ? requiredXpath : requiredXpath +
-        util.format(this.elements.getSharedFromUserName.selector, sharer)
-      return this.waitForElementNotPresent({
-        locateStrategy: this.elements.assertStatusFileRow.locateStrategy,
-        selector: requiredXpath
-      })
+      await this.api.elements(
+        this.elements.assertStatusFileRow.locateStrategy,
+        requiredXpath,
+        (result) => {
+          isPresent = result.value.length === 1
+        }
+      )
+      return isPresent
     },
     /**
      * @param {string} filename
@@ -70,18 +61,28 @@ module.exports = {
         .waitForOutstandingAjaxCalls()
     },
     /**
-     * Asserts that the element(file/folder/resource) on the shared-with-me page is shared by the desired user
+     * gets the username of user that the element(file/folder/resource) on the shared-with-me page is shared by
      *
      * @param {string} element
-     * @param {string} sharer
+     *
+     * @return {Promise<string>}
      */
-    assertSharedByUser: function (element, sharer) {
+    getSharedByUser: async function (element) {
+      let username
       const requiredXpath = this.api.page.FilesPageElement.filesList().getFileRowSelectorByFileName(element) +
-                          util.format(this.elements.getSharedFromUserName.selector, sharer)
-      return this.waitForElementVisible({
+          this.elements.getSharedFromUserName.selector
+      await this.waitForElementVisible({
         locateStrategy: this.elements.getSharedFromUserName.locateStrategy,
         selector: requiredXpath
       })
+        .api.getText(
+          this.elements.getSharedFromUserName.locateStrategy,
+          requiredXpath,
+          (result) => {
+            username = result.value
+          }
+        )
+      return username
     },
     isSharePresent: async function (element, sharer) {
       const requiredXpath = this.api.page.FilesPageElement.filesList().getFileRowSelectorByFileName(element) +
@@ -99,7 +100,7 @@ module.exports = {
       locateStrategy: 'xpath'
     },
     getSharedFromUserName: {
-      selector: '//div[normalize-space(.)="%s"]',
+      selector: "//td[@class='uk-text-meta uk-text-nowrap']/div",
       locateStrategy: 'xpath'
     },
     actionOnFileRow: {
