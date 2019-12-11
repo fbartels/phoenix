@@ -1,6 +1,7 @@
 const { client } = require('nightwatch-api')
 const { Given, When, Then } = require('cucumber')
 const httpHelper = require('../helpers/httpHelper')
+const userSettings = require('../helpers/userSettings')
 const fetch = require('node-fetch')
 const assert = require('assert')
 
@@ -62,7 +63,6 @@ Then('the user should see {int} notifications on the webUI with these details',
       'Notification count miss-match!'
     )
     for (const element of expectedNotifications) {
-      const userSettings = require('../helpers/userSettings')
       const isPresent = notifications.includes(userSettings.replaceInlineCode(element.title))
       assert.ok(
         isPresent,
