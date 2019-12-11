@@ -92,7 +92,7 @@ Then('the public should not get access to the publicly shared file', async funct
     .publicLinkPasswordPage()
     .getResourceAccessDeniedMsg()
   return assert.strictEqual(
-    'This qresource is password-protected.',
+    'This resource is password-protected.',
     message,
     'Resource protected message invalid, Found: ', message
   )
