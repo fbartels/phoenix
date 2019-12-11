@@ -1,6 +1,4 @@
-const assert = require('assert')
 const util = require('util')
-const userSettings = require('../helpers/userSettings')
 
 module.exports = {
   url: function () {
@@ -73,20 +71,6 @@ module.exports = {
       return notifications
     },
     /**
-     * Checks if the notifications consists of all the expected notifications
-     * @param {string} expectedNotifications
-     */
-    assertNotificationIsPresent: async function (numberOfNotifications, expectedNotifications) {
-      const notifications = await this.getNotifications()
-      assert.strictEqual(notifications.length, numberOfNotifications)
-      const promises = []
-      for (const element of expectedNotifications) {
-        const isPresent = notifications.includes(userSettings.replaceInlineCode(element.title))
-        promises.push(this.assert.ok(isPresent))
-      }
-      return Promise.all(promises)
-    },
-    /**
      * Perform accept action on the offered shares in the notifications
      */
     acceptAllSharesInNotification: async function () {
@@ -103,10 +87,18 @@ module.exports = {
     },
     /**
      * Checks to assert the notification bell is not present as well as no notifications are present
+     *
+     * @return boolean
      */
-    assertNoNotifications: function () {
-      return this.waitForElementNotPresent('@notificationBell')
-        .assert.elementNotPresent(this.elements.notificationElement)
+    isNotificationAbsent: async function () {
+      let isAbsent = false
+      await this.waitForElementNotPresent('@notificationBell')
+        .api.elements(
+          '@notificationElement',
+          (result) => {
+            isAbsent = result.value.length === 0
+          })
+      return isAbsent
     },
     /**
      * Perform decline action on the offered shares in the notifications

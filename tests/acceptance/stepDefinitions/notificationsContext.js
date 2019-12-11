@@ -2,6 +2,7 @@ const { client } = require('nightwatch-api')
 const { Given, When, Then } = require('cucumber')
 const httpHelper = require('../helpers/httpHelper')
 const fetch = require('node-fetch')
+const assert = require('assert')
 
 When('user {string} is sent a notification', function (user) {
   const body = new URLSearchParams()
@@ -51,11 +52,25 @@ Then('the notification bell should disappear on the webUI', function () {
   return client.page.phoenixPage().waitForElementNotPresent('@notificationBell')
 })
 
-Then('the user should see {int} notifications on the webUI with these details', function (numberOfNotifications, dataTable) {
-  const dataTableHashed = dataTable.hashes()
-  return client.page.phoenixPage().assertNotificationIsPresent(numberOfNotifications, dataTableHashed)
-})
+Then('the user should see {int} notifications on the webUI with these details',
+  async function (numberOfNotifications, dataTable) {
+    const expectedNotifications = dataTable.hashes()
+    const notifications = await client.page.phoenixPage().getNotifications()
+    assert.strictEqual(
+      notifications.length,
+      numberOfNotifications,
+      'Notification count miss-match!'
+    )
+    for (const element of expectedNotifications) {
+      const userSettings = require('../helpers/userSettings')
+      const isPresent = notifications.includes(userSettings.replaceInlineCode(element.title))
+      assert.ok(
+        isPresent,
+        `Expected: '${element.title}' to be present but found: not present in ${notifications}`)
+    }
+  })
 
-Then('the user should have no notifications', function () {
-  return client.page.phoenixPage().assertNoNotifications()
+Then('the user should have no notifications', async function () {
+  const isAbsent = await client.page.phoenixPage().isNotificationAbsent()
+  assert.ok(isAbsent)
 })
