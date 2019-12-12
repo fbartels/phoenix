@@ -14,7 +14,7 @@
         <span v-if="userEmail">{{ userEmail }}</span>
         <router-link to="/account" target="_blank"><translate>Manage your account</translate></router-link>
         <br/>
-        <oc-button type="a" @click="logout()"><translate>Log out</translate></oc-button>
+        <oc-button id="logoutMenuItem" type="a" @click="logout()"><translate>Log out</translate></oc-button>
       </div>
       <div class="uk-card-footer uk-flex uk-flex-middle uk-flex-column">
         <span>Version: {{appVersion.version}}-{{appVersion.hash}} ({{appVersion.buildDate}})</span>

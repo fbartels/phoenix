@@ -6,7 +6,7 @@
         <router-view name="fullscreen"></router-view>
       </template>
       <template v-else>
-        <message-bar />
+        <message-bar :active-messages="activeMessages" @deleteMessage="$_deleteMessage" />
         <top-bar :applicationsList="$_applicationsList" :activeNotifications="activeNotifications" :user-id="user.id" :user-display-name="user.displayname" :hasAppNavigation="!!appNavigationEntries.length" @toggleAppNavigation="$_toggleAppNavigation(!appNavigationVisible)"></top-bar>
         <side-menu :visible="appNavigationVisible" :entries="appNavigationEntries" @closed="$_toggleAppNavigation(false)"></side-menu>
         <main id="main">
@@ -69,7 +69,7 @@ export default {
   },
   computed: {
     ...mapState(['route', 'user']),
-    ...mapGetters(['configuration', 'activeNotifications']),
+    ...mapGetters(['configuration', 'activeNotifications', 'activeMessages']),
     $_applicationsList () {
       return this.configuration.applications
     },
@@ -95,7 +95,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['initAuth', 'fetchNotifications']),
+    ...mapActions(['initAuth', 'fetchNotifications', 'deleteMessage']),
     $_toggleAppNavigation (state) {
       this.appNavigationVisible = state
     },
@@ -104,6 +104,9 @@ export default {
         console.error('Error while loading notifications: ', error)
         clearInterval(this.$_notificationsInterval)
       })
+    },
+    $_deleteMessage (item) {
+      this.deleteMessage(item)
     }
   },
   watch: {
