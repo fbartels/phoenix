@@ -90,6 +90,7 @@ Then('the public should not get access to the publicly shared file', async funct
   const message = await client
     .page
     .publicLinkPasswordPage()
+    .submitLinkPasswordForm() // form is submitted as password input is filled in the step before this particular step in 'when' part
     .getResourceAccessDeniedMsg()
   return assert.strictEqual(
     'This resource is password-protected.',

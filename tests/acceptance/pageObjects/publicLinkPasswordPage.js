@@ -37,6 +37,17 @@ module.exports = {
           .waitForElementNotPresent('@filesListProgressBar')
       },
       /**
+       * submits the public link password input form
+       * this is made for those scenarios where we submit wrong password in previous steps and webUI doesn't navigate to files-page
+       */
+      submitLinkPasswordForm: function () {
+        return this
+          .initAjaxCounters()
+          .waitForElementVisible('@passwordInput')
+          .click('@passwordSubmitButton')
+          .waitForOutstandingAjaxCalls()
+      },
+      /**
        * gets resource access denied message after clicking submit password button for a public link share
        *
        * @return {Promise<string>}
@@ -44,10 +55,7 @@ module.exports = {
       getResourceAccessDeniedMsg: async function () {
         let message
         await this
-          .waitForElementPresent('@passwordSubmitButton')
-          .click('@passwordSubmitButton')
-          .waitForElementVisible('@loadingPublicLink')
-          .waitForElementPresent('@passwordInput')
+          .waitForElementVisible('@passwordSubmitButton')
           .getText(
             '@resourceProtectedText',
             (result) => {
