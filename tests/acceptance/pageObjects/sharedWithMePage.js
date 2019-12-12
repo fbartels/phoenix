@@ -26,18 +26,24 @@ module.exports = {
      * @return {Promise<boolean>}
      */
     isDesiredStatusPresent: async function (filename, status, user) {
-      let isPresent
+      let isPresent = false
       let requiredXpath = this.api.page.FilesPageElement.filesList().getFileRowSelectorByFileName(filename) +
                           util.format(this.elements.assertStatusFileRow.selector, status)
       requiredXpath = user === undefined ? requiredXpath : requiredXpath +
                       util.format(this.elements.getSharedFromUserName.selector, user)
-      await this.api.elements(
-        this.elements.assertStatusFileRow.locateStrategy,
-        requiredXpath,
-        (result) => {
-          isPresent = result.value.length === 1
-        }
-      )
+      await this
+        .waitForElementVisible({
+          locateStrategy: this.elements.assertStatusFileRow.locateStrategy,
+          selector: requiredXpath,
+          abortOnFailure: false // continue if fails too because there couldn't be desired status
+        })
+        .api.elements(
+          this.elements.assertStatusFileRow.locateStrategy,
+          requiredXpath,
+          (result) => {
+            isPresent = result.value.length > 0
+          }
+        )
       return isPresent
     },
     /**
@@ -70,13 +76,13 @@ module.exports = {
     getSharedByUser: async function (element) {
       let username
       const requiredXpath = this.api.page.FilesPageElement.filesList().getFileRowSelectorByFileName(element) +
-          this.elements.getSharedFromUserName.selector
+          this.elements.sharedFrom.selector
       await this.waitForElementVisible({
-        locateStrategy: this.elements.getSharedFromUserName.locateStrategy,
+        locateStrategy: this.elements.sharedFrom.locateStrategy,
         selector: requiredXpath
       })
         .api.getText(
-          this.elements.getSharedFromUserName.locateStrategy,
+          this.elements.sharedFrom.locateStrategy,
           requiredXpath,
           (result) => {
             username = result.value
@@ -100,6 +106,10 @@ module.exports = {
       locateStrategy: 'xpath'
     },
     getSharedFromUserName: {
+      selector: '//div[normalize-space(.)="%s"]',
+      locateStrategy: 'xpath'
+    },
+    sharedFrom: {
       selector: "//td[@class='uk-text-meta uk-text-nowrap']/div",
       locateStrategy: 'xpath'
     },
