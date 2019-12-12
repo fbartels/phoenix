@@ -12,9 +12,9 @@
         />
         <h3 class="uk-card-title">{{ userDisplayName }}</h3>
         <span v-if="userEmail">{{ userEmail }}</span>
-        <oc-button type="a" href="/account">Manage your account</oc-button>
+        <oc-button type="a" href="/account"><translate>Manage your account</translate></oc-button>
         <br/>
-        <oc-button type="a" @click="logout()">Sign out</oc-button>
+        <oc-button type="a" @click="logout()"><translate>Sign out</translate></oc-button>
       </div>
       <div class="uk-card-footer uk-flex uk-flex-middle uk-flex-column">
         <span>Version: {{appVersion.version}}-{{appVersion.hash}} ({{appVersion.buildDate}})</span>
@@ -60,29 +60,17 @@ export default {
       }
     }
   },
-  computed: {
-    _logoutItemText () {
-      // return this.$gettextInterpolate(this.$gettext('Exit %{product}'), { product: this.configuration.theme.general.name })
-      return 'Logout' // TODO
-    }
-  },
   methods: {
     logout () {
       this.visible = false
       this.$store.dispatch('logout')
     },
-    navigateTo (route) {
-      this.$router.push(route)
-    },
-    translateMenu (navItem) {
-      // FIXME need to know the locale
-      // return this.$gettext(navItem.name)
-      return navItem.name
-    },
     openItem (url) {
       if (url) {
         const win = window.open(url, '_blank')
-        win.focus()
+        if (win) {
+          win.focus()
+        }
       }
     },
     focusFirstLink () {
@@ -98,17 +86,3 @@ export default {
   }
 }
 </script>
-<style scoped>
-#nav-dropdown {
-    position: fixed;
-    top: 15px;
-    right: 0;
-    padding-left: 32px;
-    width: 200px;
-    height: 300px;
-    z-index: 10000;
-    background-color: white;
-    border: 1px solid black;
-    box-shadow: 10px 1px 10px;
-}
-</style>

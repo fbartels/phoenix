@@ -39,10 +39,6 @@ export default {
     }
   },
   computed: {
-    _logoutItemText () {
-      // return this.$gettextInterpolate(this.$gettext('Exit %{product}'), { product: this.configuration.theme.general.name })
-      return 'Logout' // TODO
-    },
     $_applicationsList () {
       return this.applicationsList.map((item) => {
         const lang = this.$language.current
@@ -90,17 +86,3 @@ export default {
   }
 }
 </script>
-<style scoped>
-#nav-dropdown {
-    position: fixed;
-    top: 15px;
-    right: 0;
-    padding-left: 32px;
-    width: 200px;
-    height: 300px;
-    z-index: 10000;
-    background-color: white;
-    border: 1px solid black;
-    box-shadow: 10px 1px 10px;
-}
-</style>
