@@ -10,8 +10,5 @@
   "apps" : [
     "files"
   ],
-  "menu" : {
-    "items": {
-	}
-  }
+  "applications" : []
 }

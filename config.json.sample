@@ -8,13 +8,9 @@
     "authUrl": "https://demo.owncloud.com/index.php/apps/oauth2/authorize"
   },
   "apps" : ["files"],
-  "menu": {
-    "items": [
-      {
-        "name": "Files",
-        "iconMaterial": "folder",
-        "url": "http://demo.owncloud.com/index.html#/files/list"
-      }
-    ]
-  }
+  "applications": [{
+	"name": "Files",
+	"iconMaterial": "folder",
+	"url": "http://demo.owncloud.com/index.html#/files/list"
+  }]
 }

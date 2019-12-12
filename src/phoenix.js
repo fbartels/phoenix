@@ -158,8 +158,7 @@ function loadApps () {
     data: {
       config: config,
       plugins: plugins.flat(),
-      navItems: navItems,
-      appSwitcherItems: config.menu && config.menu.items
+      navItems: navItems
     },
     store,
     router,

@@ -66,7 +66,7 @@ export default {
     ...mapState(['route', 'user']),
     ...mapGetters(['configuration', 'activeNotifications']),
     $_applicationsList () {
-      return this.$root.appSwitcherItems
+      return this.configuration.applications
     },
 
     appNavigationEntries () {

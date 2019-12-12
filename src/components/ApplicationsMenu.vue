@@ -3,12 +3,11 @@
     <oc-button id="_appSwitcherButton" icon="apps" variation="primary" class="oc-topbar-menu-burger uk-height-1-1"  aria-label="$gettext('Application Switcher')" ref="menubutton" />
     <oc-drop toggle="#_appSwitcherButton" mode="click" :options="{pos:'bottom-right'}" class="uk-width-large" ref="menu">
       <div class="uk-grid-small uk-text-center" uk-grid>
-        <div class="uk-width-1-3" v-for="(n, nid) in applicationsList" :key="nid">
-          <a :href="n.route ? n.route.path : null" @click="openItem(n.url)">
-            <oc-icon v-if="n.iconMaterial && !n.iconUrl" :name="n.iconMaterial" size="large" />
-            <oc-icon v-if="n.iconUrl" :url="n.iconUrl" :variation="n.iconVariation || system" size="large" />
-            <oc-icon v-if="!n.iconMaterial && !n.iconUrl" name="deprecated" size="large" />
-            <div>{{ translateMenu(n) }}</div>
+        <div class="uk-width-1-3" v-for="(n, nid) in $_applicationsList" :key="nid">
+          <a target="_blank" :href="n.url">
+            <oc-icon v-if="n.iconMaterial" :name="n.iconMaterial" size="large" />
+            <oc-icon v-if="n.iconUrl" :url="n.iconUrl" size="large" />
+            <div>{{ n.title }}</div>
           </a>
         </div>
       </div>
@@ -43,23 +42,40 @@ export default {
     _logoutItemText () {
       // return this.$gettextInterpolate(this.$gettext('Exit %{product}'), { product: this.configuration.theme.general.name })
       return 'Logout' // TODO
+    },
+    $_applicationsList () {
+      return this.applicationsList.map((item) => {
+        const lang = this.$language.current
+        // TODO: move language resolution to a common function
+        // FIXME: need to handle logic for variants like en_US vs en_GB
+        let title = item.title.en
+        let iconMaterial
+        let iconUrl
+        if (item.title[lang]) {
+          title = item.title[lang]
+        }
+
+        if (!item.icon) {
+          iconMaterial = 'deprecated' // broken icon
+        } else if (item.icon.indexOf('://') <= 0) {
+          // not an URL, treat as a material icon name
+          iconMaterial = item.icon
+        } else {
+          iconUrl = item.icon
+        }
+        return {
+          iconMaterial: iconMaterial,
+          iconUrl: iconUrl,
+          title: title,
+          url: item.url
+        }
+      })
     }
   },
   methods: {
     logout () {
       this.visible = false
       this.$store.dispatch('logout')
-    },
-    translateMenu (navItem) {
-      // FIXME need to know the locale
-      // return this.$gettext(navItem.name)
-      return navItem.name
-    },
-    openItem (url) {
-      if (url) {
-        const win = window.open(url, '_blank')
-        win.focus()
-      }
     },
     focusFirstLink () {
       /*
