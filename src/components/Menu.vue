@@ -30,8 +30,6 @@ export default {
       }
     }
   },
-  computed: {
-  },
   methods: {
     close () {
       this.$emit('closed')
@@ -47,6 +45,7 @@ export default {
         const win = window.open(url, '_blank')
         win.focus()
       }
+      this.close()
     },
     isActive (navItem) {
       return navItem.route.name === this.$route.name

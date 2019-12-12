@@ -48,6 +48,11 @@ export default {
       }, 30000)
     }
   },
+  destroyed () {
+    if (this.$_notificationsInterval) {
+      clearInterval(this.$_notificationsInterval)
+    }
+  },
   metaInfo () {
     const metaInfo = {
       title: this.configuration.theme.general.name
@@ -99,6 +104,11 @@ export default {
         console.error('Error while loading notifications: ', error)
         clearInterval(this.$_notificationsInterval)
       })
+    }
+  },
+  watch: {
+    $route () {
+      this.appNavigationVisible = false
     }
   }
 }

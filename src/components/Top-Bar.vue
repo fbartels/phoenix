@@ -1,6 +1,5 @@
 <template>
   <div>
-    <message-bar />
     <oc-navbar id="oc-topbar" tag="header" class="oc-topbar uk-position-relative uk-navbar">
       <oc-navbar-item position="left">
         <oc-button v-if="hasAppNavigation" icon="menu" variation="primary" class="oc-topbar-menu-burger uk-height-1-1" aria-label="Menu" @click="$_onOpenAppNavigation" ref="menubutton">
@@ -23,7 +22,6 @@
 import pluginHelper from '../mixins/pluginHelper.js'
 import ApplicationsMenu from './ApplicationsMenu.vue'
 import UserMenu from './UserMenu.vue'
-import MessageBar from './MessageBar.vue'
 import Notifications from './Notifications.vue'
 
 export default {
@@ -33,8 +31,7 @@ export default {
   components: {
     Notifications,
     ApplicationsMenu,
-    UserMenu,
-    MessageBar
+    UserMenu
   },
   props: {
     userId: {
@@ -63,13 +60,6 @@ export default {
       default: () => []
     }
   },
-  data () {
-    return {
-      intervalId: null,
-      isApplicationsMenuVisible: false,
-      isSideMenuVisible: false
-    }
-  },
   methods: {
     $_onOpenAppNavigation () {
       this.$emit('toggleAppNavigation')
@@ -78,11 +68,6 @@ export default {
   computed: {
     isPublicPage () {
       return !this.userId
-    }
-  },
-  destroyed: function () {
-    if (this.intervalId) {
-      clearInterval(this.intervalId)
     }
   }
 }
