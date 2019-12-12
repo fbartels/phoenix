@@ -11,9 +11,9 @@
         <router-link to="/" class="oc-topbar-icon">ownCloud X</router-link>
       </oc-navbar-item>
       <oc-navbar-item position="right" v-if="!isPublicPage">
-        <notifications v-if="activeNotifications.length"></notifications>
+        <notifications v-if="activeNotifications.length" />
         <applications-menu :applicationsList="applicationsList"/>
-        <user-menu :userid="userId" :userDisplayName="userDisplayName" />
+        <user-menu :user-id="userId" :user-display-name="userDisplayName" />
       </oc-navbar-item>
     </oc-navbar>
   </div>
@@ -37,12 +37,6 @@ export default {
     MessageBar
   },
   props: {
-    showNotifications: {
-      type: Boolean,
-      required: false,
-      default: false
-    },
-
     userId: {
       type: String,
       required: false,
@@ -62,45 +56,28 @@ export default {
       type: Boolean,
       required: false,
       default: false
+    },
+    activeNotifications: {
+      type: [Array, Boolean],
+      required: false,
+      default: () => []
     }
   },
   data () {
     return {
       intervalId: null,
       isApplicationsMenuVisible: false,
-      isSideMenuVisible: false,
-      activeNotifications: []
+      isSideMenuVisible: false
     }
   },
   methods: {
     $_onOpenAppNavigation () {
       this.$emit('toggleAppNavigation')
-    },
-    fetchNotifications () {
-      // TODO
     }
   },
   computed: {
     isPublicPage () {
       return !this.userId
-    }
-  },
-  created: function () {
-    if (this.isPublicPage) {
-      return
-    }
-
-    // only fetch notifications if the server supports them
-    if (this.showNotifications) {
-      this.fetchNotifications(this.$client).then(() => {
-        this.intervalId = setInterval(() => {
-          this.fetchNotifications(this.$client).catch(() => {
-            if (this.intervalId) {
-              clearInterval(this.intervalId)
-            }
-          })
-        }, 30000)
-      })
     }
   },
   destroyed: function () {

@@ -8,7 +8,7 @@
       <div class="uk-card-body uk-flex uk-flex-middle uk-flex-column">
         <avatar
           :userid="userId"
-          width="128"
+          :width="128"
         />
         <h3 class="uk-card-title">{{ userDisplayName }}</h3>
         <span v-if="userEmail">{{ userEmail }}</span>

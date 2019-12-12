@@ -7,7 +7,7 @@
       </template>
       <template v-else>
         <message-bar />
-        <top-bar :applicationsList="$_applicationsList" :showNotifications="$_notificationsSupported" :userId="user.id" :userDisplayName="user.displayname" :hasAppNavigation="!!appNavigationEntries.length" @toggleAppNavigation="$_toggleAppNavigation(!appNavigationVisible)"></top-bar>
+        <top-bar :applicationsList="$_applicationsList" :activeNotifications="activeNotifications" :user-id="user.id" :user-display-name="user.displayname" :hasAppNavigation="!!appNavigationEntries.length" @toggleAppNavigation="$_toggleAppNavigation(!appNavigationVisible)"></top-bar>
         <side-menu :visible="appNavigationVisible" :entries="appNavigationEntries" @closed="$_toggleAppNavigation(false)"></side-menu>
         <main id="main">
           <router-view id="oc-app-container" name="app" class="uk-height-1-1"></router-view>
@@ -33,7 +33,19 @@ export default {
   },
   data () {
     return {
-      appNavigationVisible: false
+      appNavigationVisible: false,
+      $_notificationsInterval: null
+    }
+  },
+  created () {
+    // setup notifications
+    if (!this.publicPage() && this.user.capabilities.notifications) {
+      this.$nextTick(() => {
+        this.$_updateNotifications()
+      })
+      this.$_notificationsInterval = setInterval(() => {
+        this.$_updateNotifications()
+      }, 30000)
     }
   },
   metaInfo () {
@@ -52,7 +64,7 @@ export default {
   },
   computed: {
     ...mapState(['route', 'user']),
-    ...mapGetters(['configuration']),
+    ...mapGetters(['configuration', 'activeNotifications']),
     $_applicationsList () {
       return this.$root.appSwitcherItems
     },
@@ -75,16 +87,18 @@ export default {
     },
     favicon () {
       return this.configuration.theme.logo.favicon
-    },
-
-    $_notificationsSupported () {
-      return !!this.user.capabilities.notifications
     }
   },
   methods: {
-    ...mapActions(['initAuth']),
+    ...mapActions(['initAuth', 'fetchNotifications']),
     $_toggleAppNavigation (state) {
       this.appNavigationVisible = state
+    },
+    $_updateNotifications () {
+      this.fetchNotifications(this.$client).catch((error) => {
+        console.error('Error while loading notifications: ', error)
+        clearInterval(this.$_notificationsInterval)
+      })
     }
   }
 }

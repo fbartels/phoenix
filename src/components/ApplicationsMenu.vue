@@ -1,11 +1,13 @@
 <template>
   <div v-if="!!applicationsList.length">
-    <oc-button id="_appSwitcherButton" icon="menu" variation="primary" class="oc-topbar-menu-burger uk-height-1-1"  aria-label="$gettext('Application Switcher')" ref="menubutton" />
+    <oc-button id="_appSwitcherButton" icon="apps" variation="primary" class="oc-topbar-menu-burger uk-height-1-1"  aria-label="$gettext('Application Switcher')" ref="menubutton" />
     <oc-drop toggle="#_appSwitcherButton" mode="click" :options="{pos:'bottom-right'}" class="uk-width-large" ref="menu">
       <div class="uk-grid-small uk-text-center" uk-grid>
         <div class="uk-width-1-3" v-for="(n, nid) in applicationsList" :key="nid">
           <a :href="n.route ? n.route.path : null" @click="openItem(n.url)">
-            <oc-icon :name="n.iconMaterial" size="large" />
+            <oc-icon v-if="n.iconMaterial && !n.iconUrl" :name="n.iconMaterial" size="large" />
+            <oc-icon v-if="n.iconUrl" :url="n.iconUrl" :variation="n.iconVariation || system" size="large" />
+            <oc-icon v-if="!n.iconMaterial && !n.iconUrl" name="deprecated" size="large" />
             <div>{{ translateMenu(n) }}</div>
           </a>
         </div>

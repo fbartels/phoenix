@@ -1,6 +1,6 @@
 <template>
   <span v-if="enabled">
-    <oc-avatar width=42 height=42 :loading="loading" :src="avatarSource" />
+    <oc-avatar :width="width" :height="width" :loading="loading" :src="avatarSource" />
   </span>
 </template>
 <script>
@@ -78,6 +78,11 @@ export default {
        * Allow empty string to show placeholder
        */
       default: ''
+    },
+    width: {
+      type: Number,
+      required: false,
+      default: 42
     }
   }
 }
