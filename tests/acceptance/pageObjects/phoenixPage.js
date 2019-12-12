@@ -93,10 +93,10 @@ module.exports = {
     isNotificationAbsent: async function () {
       let isAbsent = false
       await this.waitForElementNotPresent('@notificationBell')
-        .api.elements(
+        .api.element(
           '@notificationElement',
           (result) => {
-            isAbsent = result.value.length === 0
+            isAbsent = result.status === -1 && result.value.error !== undefined
           })
       return isAbsent
     },
