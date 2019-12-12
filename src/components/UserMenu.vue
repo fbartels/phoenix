@@ -12,9 +12,9 @@
         />
         <h3 class="uk-card-title">{{ userDisplayName }}</h3>
         <span v-if="userEmail">{{ userEmail }}</span>
-        <oc-button type="a" href="/account"><translate>Manage your account</translate></oc-button>
+        <router-link to="/account" target="_blank"><translate>Manage your account</translate></router-link>
         <br/>
-        <oc-button type="a" @click="logout()"><translate>Sign out</translate></oc-button>
+        <oc-button type="a" @click="logout()"><translate>Log out</translate></oc-button>
       </div>
       <div class="uk-card-footer uk-flex uk-flex-middle uk-flex-column">
         <span>Version: {{appVersion.version}}-{{appVersion.hash}} ({{appVersion.buildDate}})</span>
