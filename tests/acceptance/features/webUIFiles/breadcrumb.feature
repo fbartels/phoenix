@@ -35,7 +35,7 @@ Feature: access breadcrumb
 #    Then no message should be displayed on the webUI
 
   @issue-1883
-  Scenario: Reload webUI inside the problamatic folder
+  Scenario: Reload webUI inside the problematic folder
     Given user "user1" has created folder "folder%2Fwith%2FSlashes"
     And user "user1" has logged in using the webUI
     When the user opens folder "folder%2Fwith%2FSlashes" using the webUI
